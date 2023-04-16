@@ -7,11 +7,11 @@ const productSchema= new mongoose.Schema({
     title: {type: String,required:true},
     description: {type: String,required:true},
     price: { type: Number,required:true,min:1},
-    thumbnail: {type: String,required:true},
+    thumbnail: {type: String},
     code: {type: String,required:true},
     stock: {type: Number,required:true},
     status:{type: Boolean,required:true},
-    category:{ type: String,required:true,enum: ['Ropa', 'Libros','Otros']},
+    category:{ type: String,required:true,enum: ['ropa', 'libros','cocina']},
 });
 
 productSchema.plugin(mongoosePaginate);

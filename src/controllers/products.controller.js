@@ -64,6 +64,15 @@ class ProductController{
         }
     };
 
+    static async newProduct(req,res){
+        try {
+            res.render("createProducts")
+        } catch (error) {
+            res.status(400).json({message:error.message});
+        }
+    };
+
+
     static async getProductById(req,res){
         try {
             const {pid} = req.params;

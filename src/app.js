@@ -15,6 +15,7 @@ import { ChatModel} from "./daos/models/chat.model.js";
 import { authRouter } from "./routes/auth.routes.js";
 import passport from "passport";
 import { initializePassport } from "./config/passport.config.js";
+import {mockinRouter} from "./routes/mockinProducts.routes.js"
 
 
 // Ejecucion del servidor
@@ -58,6 +59,7 @@ app.use(webRouter);
 app.use("/api/products", productsRouter);
 app.use("/api/carts", cartsRouter);
 app.use("/api/sessions", authRouter);
+app.use("/mockingproducts", mockinRouter) 
 
 //service
 const chatManager = new chatManagerMongo(ChatModel);
