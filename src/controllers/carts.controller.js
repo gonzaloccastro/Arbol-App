@@ -5,11 +5,21 @@ import { cartDao } from "../daos/factory.js";
 const cartManager = cartDao;
 
 import { productDao } from "../daos/factory.js";
+import { ProductRepository } from "../daos/repository/product.repository.js";
+import { ProductController } from "./products.controller.js";
 const productManager = productDao;
 
 
 class CartsController{
 
+    static async getCarts(req,res){
+        try {
+            const carts = await cartManager.getCarts();
+            res.json({status:"success", result:carts, message:"carts"});
+        } catch (error) {
+            res.status(400).json({status:"error", error:error.message});
+        }
+    };
 
     static async createCart(req,res){
         try {
@@ -25,15 +35,37 @@ class CartsController{
         try {
             const cartId = req.params.cid;
             //obtenemos el carrito
+            const cart = await cartManager.getCartById(cartId)
+            const data = {
+                ...cart,
+            }
+            res.render("cartDetail", data);
+                } catch (error) {
+            res.status(400).json({status:"error", error:error.message});
+        }
+
+    };
+
+    static async renderOneCartById(req,res){
+        try {
+            const cartId = req.params.cid;
+            //obtenemos el carrito
             const cart = await cartManager.getCartById(cartId);
+            const data = {
+                products:cart.result.products,
+            }
             res.json({status:"success", result:cart});
+            res.render("cartDetails",data);
         } catch (error) {
             res.status(400).json({status:"error", error:error.message});
         }
 
     };
 
-    static async addOneProductToOneCart(req,res){
+
+
+
+    static async addOneProductToCart(req,res){
         try {
             const cartId = req.params.cid;
             const productId = req.params.pid;
@@ -123,9 +155,43 @@ class CartsController{
     };
 
 
+    static async purchase(req,res) {
+        try {
+            const cartId = req.params.cid;
+            const carrito = await cartManager.getCartById(cartId);
 
+            let hayStockDisponible = true;
 
+            console.log(carrito.products.length)            
 
+            for (let i = 0; i < carrito.products.length; i++) {
+
+                const producto = carrito[i];
+                const cantidad = producto.stock;
+
+                const productoEnDB = await productManager.updateProduct(
+                { _id: producto.id, stock: { $gte: cantidad } },
+                { $inc: { stock: -cantidad } },
+                { returnOriginal: false }
+                );
+                
+                if (!productoEnDB) {
+                hayStockDisponible = false;
+                alert(`No hay suficiente stock para el producto ${producto.title}`);
+                break;
+                }
+            }
+            
+            if (hayStockDisponible) {
+                console.log("Todos los productos tienen suficiente stock, continuar con el proceso de compra") 
+                res.json({status:"success"});            
+            } else {
+                res.json({status:"No todos los productos tienen stock"});            
+            }
+            } catch (error) {
+            console.log(error);
+            }
+    }
 
 }
 

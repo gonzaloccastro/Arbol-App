@@ -8,7 +8,6 @@ class ProductRepository{
         return result;
     }
 
-
     async getProducts(){
         const result = await this.dao.getProducts();
         return result;
@@ -16,6 +15,7 @@ class ProductRepository{
 
     async getPaginateProducts(query={},options={}){
         const result = await this.dao.getPaginateProducts(query={},options={});
+        //console.log("result repository", typeof result, result)
         return result;
     }
 

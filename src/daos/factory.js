@@ -9,11 +9,11 @@ switch (options.server.persistence) {
         await import("../config/dbConnection.js");
         //importar los managers
         const {ProductManagerMongo} = await import("./managers/productManagerMongo.js");
-        const {ProductModel} = await import("./models/product.model.js");
-        productDao = new ProductManagerMongo(ProductModel);
+        const {ProductModel} = await import("./models/product.model.js");    
         const {CartManagerMongo} = await import("./managers/cartManagerMongo.js");
         const {CartModel} = await import("./models/cart.model.js");
         cartDao = new CartManagerMongo(CartModel);
+        productDao = new ProductManagerMongo(ProductModel);
         break;
 
     case "fileSystem":

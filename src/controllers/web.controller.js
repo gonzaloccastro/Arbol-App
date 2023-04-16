@@ -1,15 +1,34 @@
-import { productDao } from "../daos/factory.js";
+import {Router} from "express";
+import {ProductManagerMongo} from "../daos/managers/productManagerMongo.js";
+import {ProductModel} from "../daos/models/product.model.js";
+import { CartManagerMongo } from "../daos/managers/cartManagerMongo.js";
+import { CartModel } from "../daos/models/cart.model.js";
+import { ProductController } from "./products.controller.js";
+
+const router = Router();
+
+const productManager = new ProductManagerMongo(ProductModel);
+const cartManager = new CartManagerMongo(CartModel);
+
+
+
 import {productService,cartService} from "../daos/repository/index.js";
 
 
+//patron factory
+import { productDao } from "../daos/factory.js";
+ 
 class WebController{
 
     static renderChat(req,res){
-        res.render("chat");
+        const userEmail = req.user.email;
+        const data ={
+            email:userEmail}
+        res.render("chat", data);
     }
 
     static async renderAllProducts(req,res){
-        console.log("prod: ",req.user);
+        // console.log("prod: ",req.user);
         try {
             const userEmail = req.user.email;
             const {limit = 10,page=1,category,stock,sort="asc"} = req.query;
@@ -32,7 +51,7 @@ class WebController{
                 }
             };
             // console.log("query: ", query);
-            const result = await productService.getPaginateProducts(
+            const result = await productManager.getPaginateProducts(
                 query,
                 {
                     page,
@@ -41,8 +60,9 @@ class WebController{
                     lean:true,
                 }
             );
-            // console.log("result: ", result);
+            // console.log("result", typeof result, result )
             const baseUrl = req.protocol + "://" + req.get("host") + req.originalUrl;
+            // console.log("baseUrl", typeof baseUrl, baseUrl )
             const data ={
                 email:userEmail,
                 status:"success",
@@ -58,6 +78,7 @@ class WebController{
                 nextLink: result.hasNextPage ? baseUrl.includes("page") ?
                 baseUrl.replace(`page=${result.page}`, `page=${result.nextPage}`) :baseUrl.concat(`?page=${result.nextPage}`) : null
             };
+            // console.log("data", typeof data, data )
             res.render("products", data);
         } catch (error) {
             // console.log(error.message);

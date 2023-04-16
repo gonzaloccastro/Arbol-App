@@ -9,8 +9,10 @@ const sendMessage = ()=>{
     chatbox.value='';
 };
 
-chatbox.addEventListener('keydown',(e)=>{
+
+chatbox.addEventListener('keydown', (e)=>{
     if(e.key === 'Enter'){
+        //
         sendMessage();
     }
 });

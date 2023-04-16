@@ -45,7 +45,6 @@ class ProductController{
                 }
             );
             console.log("get products", typeof result, result);
-            // console.log("result: ", result);
             const baseUrl = req.protocol + "://" + req.get("host") + req.originalUrl;
             res.json({
                 status:"success",
