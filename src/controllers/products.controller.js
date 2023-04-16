@@ -5,6 +5,11 @@
 // //services
 // const productManager = new ProductManagerMongo(ProductModel);
 
+
+import { CustomError } from "../services/error/customError.js";
+import { EError } from "../enums/EError.js";
+import { generateProductErrorInfo } from "../services/error/userErrorInfo.js";
+
 //patron factory
 import { productDao } from "../daos/factory.js";
 const productManager = productDao;
@@ -91,6 +96,18 @@ class ProductController{
             body.price = Number(body.price);
             body.stock = Number(body.stock);
             // console.log("body: ", body);
+            console.log(body)
+            if(!body.price || 
+                !body.stock
+                ){
+                //generamos el error
+                CustomError.createError({
+                    name:"Product create error",
+                    cause: generateProductErrorInfo(req.body),
+                    message:"Error creating the new prroduct",
+                    errorCode:EError.INVALID_TYPES
+                });
+            };
             const productAdded = await productService.addProduct(body);
             res.json({status:"success", result:productAdded, message:"product added"});
         } catch (error) {

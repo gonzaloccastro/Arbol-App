@@ -12,7 +12,7 @@ router.get("/new", ProductController.newProduct);
 router.get("/:pid",ProductController.getProductById);
 
 //ruta para agregar un producto
-router.post("/", isAdminRole, ProductController.createProduct);
+router.post("/", ProductController.createProduct);
 
 //ruta para actualizar un producto
 router.put("/:pid",ProductController.updateProduct);
