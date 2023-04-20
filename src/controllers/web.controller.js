@@ -5,12 +5,10 @@ import { CartManagerMongo } from "../daos/managers/cartManagerMongo.js";
 import { CartModel } from "../daos/models/cart.model.js";
 import { ProductController } from "./products.controller.js";
 
-const router = Router();
-
 const productManager = new ProductManagerMongo(ProductModel);
 const cartManager = new CartManagerMongo(CartModel);
 
-
+// router.use(addLogger);
 
 import {productService,cartService} from "../daos/repository/index.js";
 
@@ -21,9 +19,11 @@ import { productDao } from "../daos/factory.js";
 class WebController{
 
     static renderChat(req,res){
-        const userEmail = req.user.email;
+        const userEmail = req.user;
         const data ={
-            email:userEmail}
+            email:userEmail
+        };
+        req.logger.info("cargado con éxito");
         res.render("chat", data);
     }
 
@@ -82,7 +82,8 @@ class WebController{
             res.render("products", data);
         } catch (error) {
             // console.log(error.message);
-            res.send(`<div>Hubo un error al cargar esta vista</div>`);
+            req.logger.error("Hubo un error al cargar los productos");
+            res.send(`<div>Hubo un error al cargar los productos</div>`);
         }
     };
 

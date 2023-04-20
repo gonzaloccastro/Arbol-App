@@ -1,5 +1,5 @@
 {
-  "name": "clase15-primera-practica",
+  "name": "Arbol-App",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -26,6 +26,7 @@
     "passport": "^0.6.0",
     "passport-github2": "^0.1.12",
     "passport-local": "^1.0.0",
-    "socket.io": "^4.6.1"
+    "socket.io": "^4.6.1",
+    "winston": "^3.8.2"
   }
 }

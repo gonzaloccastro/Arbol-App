@@ -3,7 +3,7 @@ import {AuthController} from "../controllers/auth.controller.js";
 
 const router = Router();
 
-router.post("/signup", AuthController.signupLocal , AuthController.redirectProducts);
+router.post("/signup", AuthController.signupLocal, AuthController.redirectProducts);
 
 router.get("/failure-signup",AuthController.failureSignup);
 

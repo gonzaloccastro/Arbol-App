@@ -13,7 +13,7 @@ const cartManager = new CartManagerMongo(CartModel);
 import { WebController } from "../controllers/web.controller.js";
 
 
-router.get("/",isUserRole,WebController.renderChat);
+router.get("/",WebController.renderChat);
 
 router.get("/products",WebController.renderAllProducts);
 

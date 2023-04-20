@@ -16,6 +16,7 @@ import { authRouter } from "./routes/auth.routes.js";
 import passport from "passport";
 import { initializePassport } from "./config/passport.config.js";
 import {mockinRouter} from "./routes/mockinProducts.routes.js"
+import {addLogger} from './utils/logger.js'
 
 
 // Ejecucion del servidor
@@ -31,6 +32,7 @@ const socketServer = new Server(httpServer);
 app.use(express.json());
 app.use(express.urlencoded({extended:true}));
 app.use(express.static(path.join(__dirname,"/public")));
+app.use(addLogger);
 
 httpServer.on('error', error => console.log(`Error in server ${error}`));
 
