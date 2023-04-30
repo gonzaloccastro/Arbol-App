@@ -3,7 +3,6 @@ import {ProductManagerMongo} from "../daos/managers/productManagerMongo.js";
 import {ProductModel} from "../daos/models/product.model.js";
 import { CartManagerMongo } from "../daos/managers/cartManagerMongo.js";
 import { CartModel } from "../daos/models/cart.model.js";
-import {isUserRole} from "../middlewares/auth.js"
 
 const router = Router();
 
@@ -24,5 +23,14 @@ router.get("/cart/:cid",WebController.renderCartDetail);
 router.get("/signup",WebController.renderSignup);
 
 router.get("/login",WebController.renderLogin);
+
+router.get("/forgot-password",(req,res)=>{
+    res.render("forgotPassword")
+});
+
+router.get("/restart-password",(req,res)=>{
+    const token = req.query.token;
+    res.render("resetPassword", {token});
+});
 
 export {router as webRouter}

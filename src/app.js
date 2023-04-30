@@ -8,7 +8,6 @@ import path from "path";
 import { productsRouter } from "./routes/products.routes.js";
 import { cartsRouter } from "./routes/carts.routes.js";
 import { webRouter } from "./routes/web.routes.js";
-// import "./config/dbConnection.js";
 import {Server} from "socket.io";
 import { chatManagerMongo } from "./daos/managers/chatManagerMongo.js";
 import { ChatModel} from "./daos/models/chat.model.js";
@@ -17,7 +16,7 @@ import passport from "passport";
 import { initializePassport } from "./config/passport.config.js";
 import {mockinRouter} from "./routes/mockinProducts.routes.js"
 import {addLogger} from './utils/logger.js'
-
+import { userRouter } from "./routes/users.routes.js";
 
 // Ejecucion del servidor
 export const PORT = options.server.port;
@@ -61,11 +60,12 @@ app.use(webRouter);
 app.use("/api/products", productsRouter);
 app.use("/api/carts", cartsRouter);
 app.use("/api/sessions", authRouter);
-app.use("/mockingproducts", mockinRouter) 
+app.use("/mockingproducts", mockinRouter); 
+app.use("api/users", userRouter);
 
 //service
 const chatManager = new chatManagerMongo(ChatModel);
-////configuración socket servidor
+//configuración socket servidor
 // const messages=[];
 socketServer.on("connection",async(socketConnected)=>{
     // console.log(`Nuevo cliente conectado ${socketConnected.id}`);

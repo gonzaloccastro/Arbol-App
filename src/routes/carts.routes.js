@@ -1,6 +1,7 @@
 import {Router} from "express";
 import {CartsController} from "../controllers/carts.controller.js";
-import {isUserRole} from "../middlewares/auth.js"
+import {AdminRole,UsuarioRole} from "../constants/api.js";
+import { checkRoles } from "../middlewares/auth.js";
 
 //servicio
 // const cartManager = new CartManagerFile("carts.json");
@@ -12,7 +13,7 @@ const router = Router();
 router.get("/",CartsController.getCarts);
 
 //agregar carrito
-router.post("/",CartsController.createCart);
+router.post("/",checkRoles([AdminRole,UsuarioRole]),CartsController.createCart);
 
 //ruta para listar todos los productos de un carrito
 router.get("/:cid",CartsController.getOneCartById);

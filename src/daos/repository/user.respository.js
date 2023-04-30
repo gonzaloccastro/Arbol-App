@@ -16,6 +16,14 @@ class UserRepository{
         const resultDTO = new UserDTO(user);
         return resultDTO;
     }
+    
+    async getUserByEmail(email){
+        return await this.dao.getUserByEmail(email);
+    };
+
+    async updateUser(id, user){
+        return await this.dao.updateUser(id, user);
+    };
 }
 
 export {UserRepository};

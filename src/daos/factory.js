@@ -2,6 +2,8 @@ import { options } from "../config/options.js";
 
 let productDao;
 let cartDao;
+let userDao;
+
 
 switch (options.server.persistence) {
     case "mongo":
@@ -12,8 +14,11 @@ switch (options.server.persistence) {
         const {ProductModel} = await import("./models/product.model.js");    
         const {CartManagerMongo} = await import("./managers/cartManagerMongo.js");
         const {CartModel} = await import("./models/cart.model.js");
+        const {UserManagerMongo} = await import("./managers/userManagerMongo.js");
+        const {UserModel} = await import("./models/user.model.js");
         cartDao = new CartManagerMongo(CartModel);
         productDao = new ProductManagerMongo(ProductModel);
+        userDao = new UserManagerMongo(UserModel);
         break;
 
     case "fileSystem":
@@ -24,4 +29,4 @@ switch (options.server.persistence) {
         break;
 }
 
-export {productDao, cartDao};
+export {productDao, cartDao, userDao};

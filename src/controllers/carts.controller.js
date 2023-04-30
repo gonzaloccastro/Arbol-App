@@ -9,6 +9,8 @@ import { ProductRepository } from "../daos/repository/product.repository.js";
 import { ProductController } from "./products.controller.js";
 const productManager = productDao;
 
+import {AdminRole,UsuarioRole} from "../constants/api.js";
+
 
 class CartsController{
 
@@ -73,8 +75,14 @@ class CartsController{
             // console.log("cart: ", cart);
             const product = await productManager.getProductById(productId);
             // console.log("product: ", product);
-            const cartUpdated = await cartManager.addProductToCart(cartId, productId);
-            res.json({status:"success", result:cartUpdated, message:"product added"});
+            if((req.user.rol === UsuarioRole && product.owner == req.user._id) || req.user.rol === AdminRole){
+                // lo dejamos que agregue el producto
+                const cartUpdated = await cartManager.addProductToCart(cartId, productId);
+                res.json({status:"success", result:cartUpdated, message:"product added"});
+            } else {
+                res.json({status:"error", message:"No tienes permisos para agregar este producto"});
+            }
+            
         } catch (error) {
             res.status(400).json({status:"error", error:error.message});
         }
