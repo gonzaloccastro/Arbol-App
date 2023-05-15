@@ -5,6 +5,6 @@ import { UserController } from "../controllers/user.controller.js";
 
 const router = Router();
 
-router.put("/premium/:uid", checkRoles([AdminRole]) ,UserController.modifyUser);
+router.put("/premium/:uid", checkRoles([AdminRole]), UserController.modifyUser);
 
 export { router as userRouter}

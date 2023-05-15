@@ -1,0 +1,63 @@
+paths:
+  /api/products/:
+    get:
+      summary: "obtener todos los productos"
+      tags:
+        - Productos
+      responses:
+        "200":
+          description: productos obtenidos correctamente
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#components/schemas/Products"
+        "500":
+          description: hubo un error en el servidor, usualmente por un proceso defectuoso
+
+components:
+  schemas:
+    Products:
+      type: object
+      properties:
+        _id:
+          type: string
+          description: "id autogenerado por la base de datos"
+        title:
+          type: string
+          description: "nombre del producto"
+        description:
+          type: string
+          description: "descripción del producto"
+        price:
+          type: number
+          description: "precio del producto"
+        thumbnail:
+          type: string
+          description: "foto del producto"
+        code:
+          type: string
+          description: "código del producto"
+        stock:
+          type: number
+          description: "stock del producto"
+        status:
+          type: boolean
+          description: "si está o no el producto"
+        category:
+          type: string
+          description: "categoría del producto"
+        owner:
+          type: ObjectId
+          description: "id del usuario que creó el producto"
+  example:
+    _id: ObjectId("kajhd9127kajsh812asds23423")
+    title: "Remera con Logo"
+    description: "Remera con logo de La Casa del Árbol"
+    price: 1000
+    thumbnail: "https://res.cloudinary.com/dihxvmgae/image/upload/v1665121565/arbol-app/taza_dbqvdo.jpg"
+    code: "23432341234"
+    stock: 3
+    status: true
+    category: "ropa"

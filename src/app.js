@@ -18,6 +18,10 @@ import {mockinRouter} from "./routes/mockinProducts.routes.js"
 import {addLogger} from './utils/logger.js'
 import { userRouter } from "./routes/users.routes.js";
 
+//importacion para documentacion
+import swaggerUi from "swagger-ui-express";
+import { swaggerSpecs } from './config/docConfig.js';
+
 // Ejecucion del servidor
 export const PORT = options.server.port;
 const app = express();
@@ -62,6 +66,7 @@ app.use("/api/carts", cartsRouter);
 app.use("/api/sessions", authRouter);
 app.use("/mockingproducts", mockinRouter); 
 app.use("api/users", userRouter);
+app.use("/api/docs",swaggerUi.serve,swaggerUi.setup(swaggerSpecs));
 
 //service
 const chatManager = new chatManagerMongo(ChatModel);

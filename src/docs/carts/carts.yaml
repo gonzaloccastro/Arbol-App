@@ -1,0 +1,37 @@
+paths:
+  /api/carts/{cid}/product/{pid}:
+    post:
+      summary: "agregar producto al carrito"
+      tags:
+        - Carrito
+      parameters:
+        - name: cid
+          in: path
+          required: true
+          description: id del carrito al que se va a sumar el producto
+          schema:
+            type: string
+        - name: pid
+          in: path
+          required: true
+          description: id del producto que se va a agregar
+          schema:
+            type: string
+      responses:
+        "200":
+          description: "producto agregado correctamente"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                  payload:
+                    type: string
+        "500":
+          description: hubo un error en el servidor, usualmente por un proceso defectuoso
+
+
+
+        
