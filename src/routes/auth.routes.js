@@ -49,6 +49,19 @@ router.post("/forgot-password",async(req,res)=>{
     }
 });
 
+//ruta para enviar el correo de eliminación de cuenta
+router.post("/deleted-account/:uemail",async(req,res)=>{
+    try {
+        const userEmail = req.params.uemail;
+        await sendDeleteEmail(userEmail);
+        const data = await userService.getUsers();
+        res.render("adminPanel", data);
+    } catch (error) {
+        res.send({status:"error", error: error.message});
+    }
+});
+
+
 //ruta para restablecer la contraseña
 router.post("/reset-password",async(req,res)=>{
     try {

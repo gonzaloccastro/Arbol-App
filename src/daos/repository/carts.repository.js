@@ -24,10 +24,14 @@ class CartsRepository{
     }
 
     async deleteProduct(cartId,productId){
-        const result = await this.dao.addProductToCart(cartId,productId);
+        const result = await this.dao.deleteProduct(cartId,productId);
         return result;
     }
 
+    async deleteFullCart(cartId){
+        const result = await this.dao.deleteFullCart(cartId);
+        return result;
+    }
 
     async updateQuantityInCart(cartId, productId,quantity){
         const result = await this.dao.updateQuantityInCart(cartId, productId,quantity);

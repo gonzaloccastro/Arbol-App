@@ -3,6 +3,17 @@ class UserManagerMongo{
         this.model=model;
     };
 
+    async getUsers(){
+        try {
+            const data = await this.model.find();
+            const response = JSON.parse(JSON.stringify(data));
+            return response;
+        } catch (error) {
+            throw new Error(`Error al mostrar usuarios: ${error.message}`);
+        }
+
+    }
+
     async addUser(user){
         try {
             const data = await this.model.create(user);
@@ -49,6 +60,21 @@ class UserManagerMongo{
             throw new Error(`Error al obtener usuario: ${error.message}`);
         }
     };
+
+    async deleteUserById(id){
+        try {
+            const data = await this.model.findByIdAndDelete(id);
+            if(!data){
+                throw new Error(`no se encontro el usuario`);
+            }
+            const response = JSON.parse(JSON.stringify(data));
+            return response;
+        } catch (error) {
+            throw new Error(`Error al obtener usuario: ${error.message}`);
+        }
+    };
+
+
 }
 
 export {UserManagerMongo};

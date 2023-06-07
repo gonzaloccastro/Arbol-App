@@ -13,7 +13,7 @@ const router = Router();
 router.get("/",CartsController.getCarts);
 
 //agregar carrito
-router.post("/",checkRoles([AdminRole,UsuarioRole]),CartsController.createCart);
+router.post("/",CartsController.createCart);
 
 //ruta para listar todos los productos de un carrito
 router.get("/:cid",CartsController.getOneCartById);
@@ -28,13 +28,16 @@ router.delete("/:cid/product/:pid",CartsController.deleteOneProductToOneCart);
 router.put("/:cid",CartsController.updateOneCart);
 
 //ruta para actualizar cantidad de un producto en el carrito
-router.put("/:cid",CartsController.updateQuantityToOneCart);
+router.put("/:cid",checkRoles([AdminRole,UsuarioRole]), CartsController.updateQuantityToOneCart);
 
 //ruta para actualizar la cantidad de un producto en el carrito
 router.put("/:cid/product/:pid",CartsController.updateProductQuantityToOneCart);
 
 //ruta para eliminar todos los productos del carrito
-router.delete("/:cid",CartsController.deleteAllProductsFromCart);
+router.delete("/empty/:cid",CartsController.deleteAllProductsFromCart);
+
+//ruta para eliminar el carrito
+router.delete("/:cid",CartsController.deleteCart);
 
 //ruta para finalizar el proceso de compra
 router.put("/:cid/purchase",CartsController.purchase);

@@ -75,7 +75,7 @@ class CartsController{
             // console.log("cart: ", cart);
             const product = await productManager.getProductById(productId);
             // console.log("product: ", product);
-            if((req.user.rol === UsuarioRole && product.owner == req.user._id) || req.user.rol === AdminRole){
+            if(true){
                 // lo dejamos que agregue el producto
                 const cartUpdated = await cartManager.addProductToCart(cartId, productId);
                 res.json({status:"success", result:cartUpdated, message:"product added"});
@@ -162,6 +162,19 @@ class CartsController{
 
     };
 
+
+    static async deleteCart(req,res){
+        try {
+            const cartId = req.params.cid;
+            const cart = await cartManager.getCartById(cartId);
+            const response = await cartManager.deleteFullCart(cartId);
+            res.json({status:"success", result: response, message:"carrito eliminado"});
+        } catch (error) {
+            res.status(400).json({status:"error", error:error.message});
+        }
+
+    };
+    
 
     static async purchase(req,res) {
         try {

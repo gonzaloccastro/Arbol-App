@@ -1,0 +1,25 @@
+<div style="background:rgb(80, 206, 76);color:white;padding:10px">Bienvenido {{email}}</div>
+<h1>Usuarios</h1>
+<br/>
+{{#if users.length}}
+    Listado de usuarios
+    {{#each users}}
+        <ul>
+            <li> Nombre:{{this.fullname}}</li>
+            <li> Email: {{this.email}}</li>
+            <li> Última Sesión: {{this.last_connection}}</li>
+        </ul>
+    {{/each}}
+    <div>
+        {{#if hasPrevPage}}
+            <a href={{prevLink}}> << Anterior</a>
+        {{/if}}
+        {{this.page}}
+        {{#if hasNextPage}}
+            <a href={{nextLink}}>Siguiente >></a>
+        {{/if}}
+    </div>
+{{else}}
+    <p>No hay usuarios</p>
+{{/if}}
+<script src="/js/users.js"></script>

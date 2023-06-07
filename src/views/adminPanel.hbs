@@ -1,0 +1,32 @@
+<script src="/js/users.js"></script>
+<div style="background:rgb(80, 206, 76);color:white;padding:10px">Bienvenido {{email}}</div>
+<h1>Usuarios</h1>
+<br/>
+{{#if users.length}}
+    Listado de usuarios
+    {{#each users}}
+        <ul>
+            <li> _id: {{this._id}}</li>
+            <li> Nombre:{{this.fullname}}</li>
+            <li> Email: {{this.email}}</li>
+            <li> Rol: {{this.rol}}</li>
+            <li> Última Sesión: {{this.last_connection}}</li>
+        </ul>
+        <td>
+            <button onclick="updateRole('{{this._id}}')">Cambiar Rol</button>
+    <button onclick="deleteUser('{{this._id}}')">Eliminar</button>
+        </td>
+    {{/each}}
+    <div>
+        {{#if hasPrevPage}}
+            <a href={{prevLink}}> << Anterior</a>
+        {{/if}}
+        {{this.page}}
+        {{#if hasNextPage}}
+            <a href={{nextLink}}>Siguiente >></a>
+        {{/if}}
+    </div>
+    <button onclick="deleteOldUsers()">Eliminar usuarios sin log en los últimos 30 días.</button>
+{{else}}
+    <p>No hay usuarios</p>
+{{/if}}

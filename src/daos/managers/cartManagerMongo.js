@@ -107,6 +107,16 @@ class CartManagerMongo{
         }
     };
 
+    async deleteFullCart(id){
+        try {
+            await this.model.findByIdAndDelete(id);
+            return {message:"carrito eliminado"};
+        } catch (error) {
+            throw new Error(`Error al borrar: no se encontró el id ${id}`);
+        }
+    };
+
+
 }
 
 export {CartManagerMongo}

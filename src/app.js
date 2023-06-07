@@ -65,7 +65,7 @@ app.use("/api/products", productsRouter);
 app.use("/api/carts", cartsRouter);
 app.use("/api/sessions", authRouter);
 app.use("/mockingproducts", mockinRouter); 
-app.use("api/users", userRouter);
+app.use("/api/users", userRouter);
 app.use("/api/docs",swaggerUi.serve,swaggerUi.setup(swaggerSpecs));
 
 //service

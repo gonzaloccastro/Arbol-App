@@ -16,7 +16,7 @@ const addToCart = async (productId) => {
     const carrito = await getCart();
     const cartId = carrito.result._id;
         try {
-            const addCartProduct = await fetch(`/api/carts/${cartId}/product/${productId}`, {
+            await fetch(`/api/carts/${cartId}/product/${productId}`, {
             method: "POST",
             });
             alert("Producto agregado al carrito");
@@ -26,8 +26,8 @@ const addToCart = async (productId) => {
         }
 };
 
-
-document.getElementById("addProduct").addEventListener("click",
+if (document.getElementById("addProduct")) {
+    document.getElementById("addProduct").addEventListener("click",
    async () => {
     try {
         let productTitle = document.getElementById("productTitle").value;
@@ -96,3 +96,4 @@ document.getElementById("addProduct").addEventListener("click",
         } catch (error) {
         console.log(error);
   }});
+}

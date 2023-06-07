@@ -30,4 +30,18 @@ export const sendRecoveryEmail = async(email,token)=>{
             </a>
         `
     });
+
+
 }
+
+export const sendDeleteEmail = async(email)=>{
+    await transporter.sendMail({
+        from:"Arbol-App",
+        to: email,
+        subject:"Cuenta eliminada",
+        html:`
+            <h3>Hola,</h3>
+            <p>Eliminamos tu cuenta por estar inactivo por más de 2 días</p>
+        `
+    })
+};
