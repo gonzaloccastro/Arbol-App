@@ -20,11 +20,9 @@ class WebController{
 
     static renderChat(req,res){
         const userEmail = req.user;
-        const data ={
-            email:userEmail
-        };
+        const data ={email:userEmail};
         req.logger.info("cargado con éxito");
-        res.render("chat", data);
+        res.render("chat", data.email);
     }
 
     static async renderAllProducts(req,res){
@@ -80,6 +78,66 @@ class WebController{
             };
             // console.log("data", typeof data, data )
             res.render("products", data);
+        } catch (error) {
+            // console.log(error.message);
+            req.logger.error("Hubo un error al cargar los productos");
+            res.send(`<div>Hubo un error al cargar los productos</div>`);
+        }
+    };
+
+    static async renderAllProductsForAdmin(req,res){
+        // console.log("prod: ",req.user);
+        try {
+            const userEmail = req.user.email;
+            const {limit = 10,page=1,category,stock,sort="asc"} = req.query;
+            const stockValue = stock==0 ? undefined : parseInt(stock);
+            if(!["asc","desc"].includes(sort)){
+                return res.json({status:"error", mesage:"orden no valido"});
+            };
+            const sortValue= sort === "asc" ? 1 : -1;
+            // console.log('limit: ', limit, "page: ", page,"category: ", category, "stockValue: ", stockValue, "sortValue: ", sortValue);
+            let query={};
+            if (category && stockValue) {
+                query = { category: category, stock: {$gte:stockValue} };
+            } else {
+                if (category || stockValue) {
+                    if (category) {
+                      query = { category: category };
+                    } else {
+                      query = { stock: {$gte:stockValue} };
+                    }
+                }
+            };
+            // console.log("query: ", query);
+            const result = await productManager.getPaginateProducts(
+                query,
+                {
+                    page,
+                    limit,
+                    sort:{price:sortValue},
+                    lean:true,
+                }
+            );
+            // console.log("result", typeof result, result )
+            const baseUrl = req.protocol + "://" + req.get("host") + req.originalUrl;
+            // console.log("baseUrl", typeof baseUrl, baseUrl )
+            const data ={
+                email:userEmail,
+                status:"success",
+                payload: result.docs,
+                totalDocs: result.totalDocs,
+                totalPages: result.totalPages,
+                prevPage: result.prevPage,
+                nextPage: result.nextPage,
+                page: result.page,
+                hasPrevPage: result.hasPrevPage,
+                hasNextPage: result.hasNextPage,
+                prevLink: result.hasPrevPage ? `${baseUrl.replace(`page=${result.page}`, `page=${result.prevPage}`)}` : null,
+                nextLink: result.hasNextPage ? baseUrl.includes("page") ?
+                baseUrl.replace(`page=${result.page}`, `page=${result.nextPage}`) :baseUrl.concat(`?page=${result.nextPage}`) : null
+            };
+            // console.log("data", typeof data, data )
+            res.render("productsAdmin", data);
         } catch (error) {
             // console.log(error.message);
             req.logger.error("Hubo un error al cargar los productos");

@@ -9,7 +9,7 @@
             </div>
         {{/each}}
             <button onclick="deleteCart(`{{_id}}`)">Eliminar este carrito</button>
-            <button onclick="addToCart(`{{_id}}`)">Finalizar compra</button>
+            <button onclick="purchase('{{_id}}')">Finalizar compra</button>
     {{else}}
         No hay productos en el carrito
         <button onclick="deleteCart(`{{_id}}`)">Eliminar este carrito</button>

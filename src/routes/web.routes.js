@@ -3,6 +3,8 @@ import {ProductManagerMongo} from "../daos/managers/productManagerMongo.js";
 import {ProductModel} from "../daos/models/product.model.js";
 import { CartManagerMongo } from "../daos/managers/cartManagerMongo.js";
 import { CartModel } from "../daos/models/cart.model.js";
+import { checkRoles } from "../middlewares/auth.js";
+import {AdminRole} from "../constants/api.js";
 
 const router = Router();
 
@@ -15,6 +17,8 @@ import { WebController } from "../controllers/web.controller.js";
 router.get("/",WebController.renderChat);
 
 router.get("/products",WebController.renderAllProducts);
+
+router.get("/productsAdmin",checkRoles([AdminRole]), WebController.renderAllProductsForAdmin);
 
 router.get("/products/:pid",WebController.renderOneProduct);
 

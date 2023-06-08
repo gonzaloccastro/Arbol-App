@@ -72,17 +72,14 @@ class UserController{
             const userId = req.params.uid;
             const user = await userService.getUserById(userId);
             const userEmail = user.email;
-            console.log(userEmail)
             await userService.deleteUserById(userId);
-            await fetch(`/api/sessions/deleted-account/${userEmail}`, {
-                method: "POST",
-                });
-                alert("Mail Enviado");} 
-            catch (error) {
+            await sendDeleteEmail(userEmail);
+            await fetch(`/api/users/adminPanel`);
+            console.log("prueba");
+        } catch (error) {
           res.status(400).json({ status: "error", message: error.message });
         }
       }
-
 }
 
 export {UserController}

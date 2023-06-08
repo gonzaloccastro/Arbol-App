@@ -2,7 +2,7 @@ import {Router} from "express";
 import {AuthController} from "../controllers/auth.controller.js";
 //envio correos
 import { generateEmailToken, verifyEmailToken, isValidPassword, createHash } from "../utils.js";
-import { sendRecoveryEmail } from "../config/messages/gmail.js";
+import { sendRecoveryEmail, sendDeleteEmail } from "../config/messages/gmail.js";
 //remplazar con repository, controller y factory
 import { UserManagerMongo } from "../daos/managers/userManagerMongo.js";
 import { UserModel } from "../daos/models/user.model.js";
@@ -50,10 +50,10 @@ router.post("/forgot-password",async(req,res)=>{
 });
 
 //ruta para enviar el correo de eliminación de cuenta
-router.post("/deleted-account/:uemail",async(req,res)=>{
+router.post("/deleted-account/:email",async(req,res)=>{
     try {
-        const userEmail = req.params.uemail;
-        await sendDeleteEmail(userEmail);
+        const userEmail = req.params.email;
+        sendDeleteEmail(userEmail);
         const data = await userService.getUsers();
         res.render("adminPanel", data);
     } catch (error) {

@@ -5,11 +5,15 @@ class ProductManagerMongo{
 
     async addProduct(product){
         try {
+            console.log("product", product)
             const data = await this.model.create(product);
+            console.log("data", data)
             const response = JSON.parse(JSON.stringify(data));
+            console.log("response", response)
             return response;
         } catch (error) {
-            throw new Error(`Error al guardar: ${error}`);
+            console.log("Falta completar algún dato.")
+            throw new Error(`Error al guardar: ${error}`)
         }
     };
 

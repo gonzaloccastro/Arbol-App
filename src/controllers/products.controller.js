@@ -1,15 +1,9 @@
-// import {ProductManagerMongo} from "../daos/managers/productManagerMongo.js";
-// //importamos el modelo de productos
-// import {ProductModel} from "../daos/models/product.model.js";
-
-// //services
-// const productManager = new ProductManagerMongo(ProductModel);
-
-
 import { CustomError } from "../services/error/customError.js";
 import { EError } from "../enums/EError.js";
 import { generateProductErrorInfo } from "../services/error/userErrorInfo.js";
 import {AdminRole,PremiumRole} from "../constants/api.js";
+import {productDeletedEmail} from "../config/messages/gmail.js"
+import { userService } from "../daos/repository/index.js";
 
 //patron factory
 import { productDao } from "../daos/factory.js";
@@ -102,6 +96,7 @@ class ProductController{
             if(!body.price || 
                 !body.stock
                 ){
+                alert("Falta completar algún dato");
                 //generamos el error
                 CustomError.createError({
                     name:"Product create error",
@@ -140,9 +135,14 @@ class ProductController{
             const product = await productService.getProductById(productId);
             //validamos si el usuario que está borrando el producto es premium, y si es el owner del producto que está borrando,
             //también validamos si el usuario que está borrando el producto es un administrador
-            if((req.user.rol === PremiumRole && product.owner == req.user._id) || req.user.rol === AdminRole){
+            const productOwnerId = product.owner;
+            const productOwner = await userService.getUserById(productOwnerId)
+            console.log(productOwner.email)
+            if((req.user.rol === PremiumRole) || req.user.rol === AdminRole){
                 // lo dejamos que borre el producto
                 const productdeleted = await productService.deleteProduct(productId);
+                // le avisamos al usuario premium que su producto ha sido eliminado
+                if(productOwner.rol === PremiumRole){productDeletedEmail(productOwner.email)};
                 res.json({status:"success", result:productdeleted.message});
             } else {
                 res.json({status:"error", message:"No tienes permisos para borrar este producto"});

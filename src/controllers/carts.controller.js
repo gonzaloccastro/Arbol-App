@@ -4,12 +4,15 @@
 import { cartDao } from "../daos/factory.js";
 const cartManager = cartDao;
 
+import {purchaseEmail} from "../config/messages/gmail.js"
+import { TicketModel } from "../daos/models/ticket.model.js";
+import {generateTicketCode, calculateTotalAmount} from "../utils.js"
 import { productDao } from "../daos/factory.js";
 import { ProductRepository } from "../daos/repository/product.repository.js";
 import { ProductController } from "./products.controller.js";
 const productManager = productDao;
 
-import {AdminRole,UsuarioRole} from "../constants/api.js";
+import {PremiumRole,UsuarioRole} from "../constants/api.js";
 
 
 class CartsController{
@@ -30,7 +33,6 @@ class CartsController{
         } catch (error) {
             res.status(400).json({status:"error", error:error.message});
         }
-
     };
 
     static async getOneCartById(req,res){
@@ -45,7 +47,6 @@ class CartsController{
                 } catch (error) {
             res.status(400).json({status:"error", error:error.message});
         }
-
     };
 
     static async renderOneCartById(req,res){
@@ -64,9 +65,6 @@ class CartsController{
 
     };
 
-
-
-
     static async addOneProductToCart(req,res){
         try {
             const cartId = req.params.cid;
@@ -75,16 +73,17 @@ class CartsController{
             // console.log("cart: ", cart);
             const product = await productManager.getProductById(productId);
             // console.log("product: ", product);
-            if(true){
-                // lo dejamos que agregue el producto
-                const cartUpdated = await cartManager.addProductToCart(cartId, productId);
-                res.json({status:"success", result:cartUpdated, message:"product added"});
+            const userId = req.user._id;
+            if (req.user.rol === PremiumRole && product.owner === userId) {
+                // Usuario Premium y propietario del producto, no permitir la compra
+                res.json({ status: "error", message: "No tienes permisos para agregar este producto" });
             } else {
-                res.json({status:"error", message:"No tienes permisos para agregar este producto"});
+                // Permitir agregar el producto al carrito
+                const cartUpdated = await cartManager.addProductToCart(cartId, productId);
+                res.json({ status: "success", result: cartUpdated, message: "product added" });
             }
-            
         } catch (error) {
-            res.status(400).json({status:"error", error:error.message});
+            res.status(400).json({ status: "error", error: error.message });
         }
     };
 
@@ -175,44 +174,84 @@ class CartsController{
 
     };
     
-
     static async purchase(req,res) {
         try {
             const cartId = req.params.cid;
             const carrito = await cartManager.getCartById(cartId);
 
             let hayStockDisponible = true;
+            console.log("id del carrito",cartId)
+            console.log("carrito",carrito)
 
-            console.log(carrito.products.length)            
+            const iteration = carrito.products.length;
+            console.log(iteration)            
 
-            for (let i = 0; i < carrito.products.length; i++) {
-
-                const producto = carrito[i];
-                const cantidad = producto.stock;
+            for (let i = 0; i < iteration; i++) {
+                const producto = carrito.products[i];
+                const cantidad = producto.quantity;
+                const itemId = producto.id._id;
 
                 const productoEnDB = await productManager.updateProduct(
-                { _id: producto.id, stock: { $gte: cantidad } },
-                { $inc: { stock: -cantidad } },
-                { returnOriginal: false }
-                );
+                    { _id: itemId },
+                    { $inc: { stock: -cantidad } },
+                    { returnOriginal: false }
+                  );
                 
-                if (!productoEnDB) {
-                hayStockDisponible = false;
-                alert(`No hay suficiente stock para el producto ${producto.title}`);
-                break;
-                }
+                  if (!productoEnDB) {
+                    hayStockDisponible = false;
+                    res.json({ status: "error", message: `No hay suficiente stock para el producto ${producto.title}` });
+                    break;
+                  }
             }
-            
+            console.log("llegue hasta acá")
             if (hayStockDisponible) {
-                console.log("Todos los productos tienen suficiente stock, continuar con el proceso de compra") 
-                res.json({status:"success"});            
+                const ticketData = {
+                  code: generateTicketCode(),
+                  amount: calculateTotalAmount(carrito.products),
+                  purchaser: req.user._id,
+                };
+              
+                const ticket = new TicketModel(ticketData);
+                await ticket.save();
+              
+                console.log("Ticket creado:", ticket);
+              
+                const emailData = {
+                  products: carrito.products,
+                  amount: ticketData.amount,
+                };
+                await purchaseEmail(req.user.email, emailData);
+                res.json({status:"success", message:"compra completada"});
             } else {
-                res.json({status:"No todos los productos tienen stock"});            
-            }
+                res.json({ status: "No todos los productos tienen stock" });
+              }
             } catch (error) {
             console.log(error);
             }
     }
+
+    static generateTicketCode() {
+        const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        let code = "";
+      
+        for (let i = 0; i < 8; i++) {
+          const randomIndex = Math.floor(Math.random() * characters.length);
+          code += characters.charAt(randomIndex);
+        }
+        return code;
+    };
+      
+    static calculateTotalAmount(products) {
+        let total = 0;
+      
+        for (const product of products) {
+          const price = product.id.price;
+          const quantity = product.quantity;
+          total += price * quantity;
+        }
+      
+        return total;
+    };
 
 }
 

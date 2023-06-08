@@ -57,3 +57,28 @@ export const verifyEmailToken=(token)=>{
         return null;
     }
 };
+
+
+
+export function generateTicketCode() {
+    const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    let code = "";
+  
+    for (let i = 0; i < 8; i++) {
+      const randomIndex = Math.floor(Math.random() * characters.length);
+      code += characters.charAt(randomIndex);
+    }
+    return code;
+};
+  
+export function calculateTotalAmount(products) {
+    let total = 0;
+  
+    for (const product of products) {
+      const price = product.id.price;
+      const quantity = product.quantity;
+      total += price * quantity;
+    }
+  
+    return total;
+};

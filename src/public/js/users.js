@@ -18,7 +18,7 @@ const updateRole = async (id) => {
         await fetch(`/api/users/premium/${id}`, {
             method: "PUT",
             });
-            alert("Rol cambiado con éxito");
+            alert("Estás intentando cambiar el rol");
             window.location.href = `/api/users/adminPanel`
     } catch (err) {
         console.log(err);
@@ -30,7 +30,7 @@ const deleteUser = async (id) => {
             await fetch(`/api/users/deleteUser/${id}`, {
                 method: "DELETE",
                 });
-                alert("Usuario Eliminado");
+                alert("Estás eliminando un usuario");
                 window.location.href = `/api/users/adminPanel`
         } catch (error) {
             console.log(err);

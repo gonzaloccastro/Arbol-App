@@ -9,10 +9,10 @@ router.get("/", UserController.getAllUsers)
 
 router.put("/premium/:uid", checkRoles([AdminRole]),UserController.modifyUser);
 
-router.get("/adminPanel", UserController.getAdminPanel)
+router.get("/adminPanel", checkRoles([AdminRole]), UserController.getAdminPanel)
 
-router.delete("/deleteUser/:uid", UserController.deleteUser)
+router.delete("/deleteUser/:uid", checkRoles([AdminRole]), UserController.deleteUser)
 
-router.delete("/deleteOldUsers", UserController.deleteOldUsers)
+router.delete("/deleteOldUsers", checkRoles([AdminRole]), UserController.deleteOldUsers)
 
 export { router as userRouter}

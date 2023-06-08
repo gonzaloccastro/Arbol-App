@@ -1,6 +1,6 @@
 import {Router} from "express";
 import {CartsController} from "../controllers/carts.controller.js";
-import {AdminRole,UsuarioRole} from "../constants/api.js";
+import {AdminRole,UsuarioRole, PremiumRole} from "../constants/api.js";
 import { checkRoles } from "../middlewares/auth.js";
 
 //servicio
@@ -13,13 +13,13 @@ const router = Router();
 router.get("/",CartsController.getCarts);
 
 //agregar carrito
-router.post("/",CartsController.createCart);
+router.post("/", checkRoles([PremiumRole,UsuarioRole]), CartsController.createCart);
 
 //ruta para listar todos los productos de un carrito
 router.get("/:cid",CartsController.getOneCartById);
 
 //ruta para agregar un producto al carrito
-router.post("/:cid/product/:pid",CartsController.addOneProductToCart);
+router.post("/:cid/product/:pid", checkRoles([PremiumRole,UsuarioRole]), CartsController.addOneProductToCart);
 
 //ruta para eliminar un producto del carrito
 router.delete("/:cid/product/:pid",CartsController.deleteOneProductToOneCart);
@@ -41,6 +41,5 @@ router.delete("/:cid",CartsController.deleteCart);
 
 //ruta para finalizar el proceso de compra
 router.put("/:cid/purchase",CartsController.purchase);
-
 
 export {router as cartsRouter};

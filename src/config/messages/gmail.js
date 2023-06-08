@@ -30,11 +30,10 @@ export const sendRecoveryEmail = async(email,token)=>{
             </a>
         `
     });
-
-
 }
 
 export const sendDeleteEmail = async(email)=>{
+    
     await transporter.sendMail({
         from:"Arbol-App",
         to: email,
@@ -43,5 +42,42 @@ export const sendDeleteEmail = async(email)=>{
             <h3>Hola,</h3>
             <p>Eliminamos tu cuenta por estar inactivo por más de 2 días</p>
         `
-    })
+    });
 };
+
+export const productDeletedEmail = async(email)=>{
+    
+    await transporter.sendMail({
+        from:"Arbol-App",
+        to: email,
+        subject:"Producto eliminada",
+        html:`
+            <h3>Hola,</h3>
+            <p>Como eres un usuario premium te comentamos que un producto tuyo ha sido eliminado.</p>
+        `
+    });
+};
+
+export const purchaseEmail = async (email, data) => {
+    const { products, amount } = data;
+  
+    let productsHTML = "";
+    for (const product of products) {
+      productsHTML += `<li>${product.id.title}: ${product.quantity}</li>`;
+    }
+  
+    await transporter.sendMail({
+      from: "Arbol-App",
+      to: email,
+      subject: "Compra completada",
+      html: `
+        <h3>Hola,</h3>
+        <p>¡Gracias por comprar en nuestra tienda!</p>
+        <p>Detalles de tu compra:</p>
+        <ul>
+          ${productsHTML}
+        </ul>
+        <p>Monto total: $${amount}</p>
+      `,
+    });
+  };
